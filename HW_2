@@ -1,0 +1,178 @@
+Дана строка sql-запроса "select * from students where ". Сформируйте часть WHERE этого запроса, используя StringBuilder. Данные для фильтрации приведены ниже в виде json строки. Разберите строку, используя String.split.
+Если значение null, то параметр не должен попадать в запрос.
+Параметры для фильтрации: {"name":"Ivanov", "country":"Russia", "city":"Moscow", "age":"null"}
+
+package Lesson2;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+
+public class hw_2_1 {
+    /**
+     * @param args
+     */
+    public static void main (String[] args) {
+        String line = "";
+        StringBuilder str = new StringBuilder();
+
+        try {
+            File file = new File("C:/Users/Елена/Documents/Geekbrains/Java/Lesson2/hw_2_1.txt");
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+            line = reader.readLine();
+            if (line != null){
+                System.out.println(line);
+            }
+
+        }
+        catch (IOException ex){
+            System.out.println(ex.getMessage());
+        }
+
+        str.append("select * from students where ");
+        String sym = line.replaceAll("}","");
+        String sym1 = sym.substring(1);
+        String[] words = sym1.split(",");
+        
+        for(int i=0; i<words.length;i++){
+            String[] words1 = words[i].split(":");
+            for(int j=0;j<words1.length;j++){
+                System.out.println(words1[j]);
+            }
+            
+            str.append(words1[0]);
+            str.append("=");
+            str.append(words1[1]);
+            if(i != words.length-1){
+                str.append(" AND ");}
+
+        }
+        str.append(";");
+        String sss = str.toString();
+        System.out.println(sss);  
+
+    }
+
+}
+
+Реализуйте алгоритм сортировки пузырьком числового массива, результат после каждой итерации запишите в лог-файл.
+package Lesson2;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+
+
+public class hw_2_2 {
+    public static void main(String[] args) {
+        int [] mas = {3, 1, 10, 8, 4};
+        try (FileWriter fw = new FileWriter("hw_2_2.txt", false)) {
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+        }
+ 
+        boolean isSorted = false;
+        int temp = 0;
+        while(!isSorted) {
+            isSorted = true;
+            for (int i = 0; i < mas.length-1; i++) {
+                if(mas[i] > mas[i+1]){
+                    isSorted = false;
+ 
+                    temp = mas[i];
+                    mas[i] = mas[i+1];
+                    mas[i+1] = temp;
+
+                    try (FileWriter fw = new FileWriter("hw_2_2.txt", true)) {
+                        fw.write(Arrays.toString(mas) + "\n");
+                        fw.flush();
+                    } catch (IOException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+        
+
+
+                }
+            }
+            System.out.println(Arrays.toString(mas));
+        
+        }
+        System.out.println(Arrays.toString(mas));
+    }
+}
+
+Дана строка json:
+[{"фамилия":"Иванов","оценка":"5","предмет":"Математика"}, {"фамилия":"Петрова","оценка":"4","предмет":"Информатика"}, {"фамилия":"Краснов","оценка":"5","предмет":"Физика"}]
+Написать метод, который распарсит json и, используя StringBuilder, создаст строки вида:
+Студент [фамилия] получил [оценка] по предмету [предмет]. Например:
+Студент Иванов получил 5 по предмету Математика.
+Студент Петрова получил 4 по предмету Информатика.
+Студент Краснов получил 5 по предмету Физика.
+
+package Lesson2;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class hw_2_3 {
+    /**
+     * @param args
+     */
+    public static void main (String[] args) {
+        String line = "";
+
+        try {
+            File file = new File("C:/Users/Елена/Documents/Geekbrains/Java/Lesson2/hw_2_3.txt");
+            FileReader fr = new FileReader(file);
+            BufferedReader reader = new BufferedReader(fr);
+            line = reader.readLine();
+            if (line != null){
+                System.out.println(line);
+            }
+
+        }
+        catch (IOException ex){
+            System.out.println(ex.getMessage());
+        }
+        Scanner scanner = new Scanner(line);
+        String baseLine = scanner.nextLine();
+        StringBuilder words = new StringBuilder();
+        for (int i = 0; i < baseLine.length(); i++) {
+            if (baseLine.charAt(i) != '{'
+                    && baseLine.charAt(i) != '}'
+                    && baseLine.charAt(i) != '"'
+                    && baseLine.charAt(i) != ' ') {
+                char t = baseLine.charAt(i);
+                words.append(t);
+            }
+        }
+        String newLine = words.toString();
+        String[] tVal = newLine.split("[ : \\ ,]");
+        ArrayList<String> student = new ArrayList();
+        ArrayList<String> mark = new ArrayList();
+        ArrayList<String> subject = new ArrayList();
+        for (int i = 1; i < tVal.length; i=i+6) {
+            student.add(tVal[i]);
+        }
+        for (int i = 3; i < tVal.length; i=i+6) {
+            mark.add(tVal[i]);
+        }
+        for (int i = 5; i < tVal.length; i=i+6) {
+            subject.add(tVal[i]);
+        }
+            scanner.close();
+            System.out.println(student);
+            System.out.println(mark);
+            System.out.println(subject);
+            
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < student.size(); i++) {
+                    result.append("Студент "+ student.get(i) + " получил " + mark.get(i) + " по предмету " + subject.get(i)+"\n");
+                }
+                System.out.println(result);
+            }
+        }
